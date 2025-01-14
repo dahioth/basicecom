@@ -2,7 +2,7 @@
 
 This is a basic e-commerce shop backend made with the intention to practice spring boot with all its basic functionalities, and following best practices in terms of structure and code cleanliness. Specifically, here are the project's specifications:
 
-## Functional requirements:
+## Functional Requirements:
 * The app will have two users: user and admin.
 * The user & admin shall be able to signup and login.
 * The user shall be able to see products with their prices.
@@ -15,7 +15,7 @@ This is a basic e-commerce shop backend made with the intention to practice spri
 ## Architecture:
 * Client-server
 
-## Technology enables:
+## Technology Enablers:
 * Git for version control
 * React for client side
 * Redux for state management
@@ -24,4 +24,4 @@ This is a basic e-commerce shop backend made with the intention to practice spri
 * Flyway for migrations
 * JUnit for testing
 
-### Note: You can find the frontend in this repository.
+### Note: Will push frontend later on in a seperate repository.
