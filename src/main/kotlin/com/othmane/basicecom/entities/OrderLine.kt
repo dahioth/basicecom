@@ -1,20 +1,18 @@
 package com.othmane.basicecom.entities
 
-import jakarta.persistence.Entity
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIncludeProperties
+import jakarta.persistence.*
 
 @Entity
 data class OrderLine(
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    val order: Order,
-
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    val product: Product,
-
     var orderLineQuantity: Int,
 
-    ) : BaseEntity()
+    @ManyToOne(cascade = [CascadeType.ALL])
+    @JsonIncludeProperties("id")
+    var product: Product,
+
+    @ManyToOne(cascade = [CascadeType.ALL])
+    @JsonBackReference
+    var order: Order
+) : BaseEntity()

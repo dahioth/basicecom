@@ -1,7 +1,7 @@
 package com.othmane.basicecom.controllers
 
 import com.othmane.basicecom.dtos.AddUpdateProductDTO
-import com.othmane.basicecom.entities.Product
+import com.othmane.basicecom.dtos.ProductDTO
 import com.othmane.basicecom.services.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -9,46 +9,47 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
+@CrossOrigin(origins = ["*"])
 class ProductController {
 
     @Autowired
     lateinit var productService: ProductService
 
     @GetMapping
-    fun getProductsController() : ResponseEntity<List<Product>> {
+    fun getProductsController() : ResponseEntity<List<ProductDTO>> {
         val products = productService.getProductsService()
         return ResponseEntity.ok(products)
     }
 
     @PostMapping
-    fun addProductController(@RequestBody productToAdd: AddUpdateProductDTO) : ResponseEntity<Product> {
+    fun addProductController(@RequestBody productToAdd: AddUpdateProductDTO) : ResponseEntity<ProductDTO> {
         val product = productService.addProductService(
-            productToAdd.productName,
-            productToAdd.productDescription,
-            productToAdd.productPrice,
-            productToAdd.productQuantity,
-            )
-        return ResponseEntity<Product>(product, HttpStatus.CREATED)
+            productToAdd.name,
+            productToAdd.description,
+            productToAdd.price,
+            productToAdd.quantity)
+
+        return ResponseEntity<ProductDTO>(product, HttpStatus.CREATED)
     }
 
     @PutMapping("/{productId}")
     fun updateProductController(@PathVariable productId: Long,
                                 @RequestBody newProduct: AddUpdateProductDTO,
-                                ): ResponseEntity<Product> {
+                                ): ResponseEntity<ProductDTO> {
         val updatedProduct = productService.updateProductService(
             productId,
-            newProduct.productName,
-            newProduct.productDescription,
-            newProduct.productPrice,
-            newProduct.productQuantity,
-        )
+            newProduct.name,
+            newProduct.description,
+            newProduct.price,
+            newProduct.quantity)
 
-        return ResponseEntity<Product>(updatedProduct, HttpStatus.OK)
+        return ResponseEntity<ProductDTO>(updatedProduct, HttpStatus.OK)
     }
 
     @DeleteMapping("/{productId}")
-    fun deleteProductController(@PathVariable productId: Long,) : ResponseEntity<Unit> {
+    fun deleteProductController(@PathVariable productId: Long) : ResponseEntity<Unit> {
+        productService.deleteProductService(productId)
         return ResponseEntity(HttpStatus.OK)
     }
 

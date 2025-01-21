@@ -1,5 +1,6 @@
 package com.othmane.basicecom.services
 
+import com.othmane.basicecom.dtos.ProductDTO
 import com.othmane.basicecom.entities.Product
 import com.othmane.basicecom.repositories.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,48 +12,47 @@ class ProductService {
     @Autowired
     lateinit var productRepository: ProductRepository
 
-    fun getProductsService() : List<Product> {
-        return productRepository.findAll()
+    fun getProductsService() : List<ProductDTO> {
+        return productRepository.findAll().map {
+            it.mapToProduct()
+        }
     }
 
     fun addProductService(productName: String,
                           productDescription: String,
                           productPrice: Double,
                           productQuantity: Int = 0,
-                          ) : Product {
+                          ) : ProductDTO {
         val product = Product(
             productName,
             productDescription,
             productPrice,
             productQuantity,)
 
-        return productRepository.save(product)
+        return productRepository.save(product).mapToProduct()
     }
 
     fun updateProductService(productId: Long,
                              productName: String,
                              productDescription: String,
                              productPrice: Double,
-                             productQuantity: Int = 0,
-                             ) : Product {
+                             productQuantity: Int,
+                             ) : ProductDTO {
 
-        val productToUpdate = productRepository.findById(productId)
-
-        if (!productToUpdate.isPresent) {
-            // TODO: Add Exception
+        val productToUpdate = productRepository.findById(productId).orElseThrow{
             throw IllegalArgumentException("Product not found")
         }
-        productToUpdate.get().productName = productName
-        productToUpdate.get().productDescription = productDescription
-        productToUpdate.get().productPrice = productPrice
-        productToUpdate.get().productQuantity = productQuantity
 
-        return productRepository.save(productToUpdate.get())
+        productToUpdate.productName = productName
+        productToUpdate.productDescription = productDescription
+        productToUpdate.productPrice = productPrice
+        productToUpdate.productQuantity = productQuantity
+
+        return productRepository.save(productToUpdate).mapToProduct()
     }
 
     fun deleteProductService(productId: Long) {
         val productToDelete = productRepository.findById(productId)
-        // TODO: Do it with .orElseThrow()
 
         if (!productToDelete.isPresent) {
             throw IllegalArgumentException("Product not found")
@@ -60,4 +60,13 @@ class ProductService {
 
         productRepository.deleteById(productId)
     }
+
+    private fun Product.mapToProduct(): ProductDTO =
+        ProductDTO(
+            id = id,
+            name = productName,
+            description = productDescription,
+            price = productPrice,
+            quantity = productQuantity,
+        )
 }
