@@ -1,0 +1,33 @@
+services:
+  db:
+    ports:
+      - "5432:5432"
+    container_name: basicecom1_postgres
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - C:\Users\Othmane\Desktop\programming\volumes\interviews\basicecom1\db:/var/lib/postgresql/data
+    restart: always
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: basicecom1_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: always
+  frontend:
+    build:
+      context: ../project
+      dockerfile: Dockerfile
+    container_name: basicecom1_frontend
+    ports:
+      - "4173:4173"
+    depends_on:
+      - backend
+    restart: always
